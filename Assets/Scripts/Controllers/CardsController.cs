@@ -88,7 +88,9 @@ class IdleState : ICardControllerState
     public void NotifyExitCard(Card card)
     {
         hoveredCards.Remove(card);
-        // Reorder the children of the component
+        for (int i = 0; i < this.controller.Cards.Count; i++) {
+            this.controller.Cards[i].transform.SetSiblingIndex(i);
+        }
     }
 }
 
