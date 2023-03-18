@@ -1,0 +1,134 @@
+﻿{
+  "Asset": [
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_0",
+      "Adjacency": [
+        "Grass",
+        "Grass",
+        "Grass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_1",
+      "Adjacency": [
+        "Mountain",
+        "Grass",
+        "Grass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_2",
+      "Adjacency": [
+        "Grass",
+        "Mountain",
+        "Grass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_3",
+      "Adjacency": [
+        "Grass",
+        "Grass",
+        "Mountain",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_4",
+      "Adjacency": [
+        "Grass",
+        "Grass",
+        "Grass",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_5",
+      "Adjacency": [
+        "Mountain",
+        "Mountain",
+        "Grass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_6",
+      "Adjacency": [
+        "Mountain",
+        "Grass",
+        "Mountain",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_7",
+      "Adjacency": [
+        "Grass",
+        "Mountain",
+        "Grass",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_8",
+      "Adjacency": [
+        "Grass",
+        "Grass",
+        "Mountain",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_9",
+      "Adjacency": [
+        "Mountain",
+        "Mountain",
+        "Mountain",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_10",
+      "Adjacency": [
+        "Mountain",
+        "Mountain",
+        "Grass",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_11",
+      "Adjacency": [
+        "Grass",
+        "Mountain",
+        "Mountain",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/wfcassets",
+      "AssetName": "wfcassets_12",
+      "Adjacency": [
+        "Mountain",
+        "Grass",
+        "Mountain",
+        "Mountain"
+      ]
+    }
+  ]
+}
