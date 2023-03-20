@@ -36,6 +36,42 @@ class IdleState : ICardControllerState
         this.Controller = controller;
     }
 
+    private Vector2 CalculatePositionForCard(int index, int total, Card card)
+    {
+        var parameters = Controller.Parameters;
+        Rect canvasRect = Controller.Canvas.pixelRect;
+        bool isCardHovered = HoveredCard == card;
+
+        float horizontalSpread = Mathf.Min(parameters.CardSpread / total, parameters.CardPrefferedDistance);
+        float maxHorizontalSpread = horizontalSpread * total;
+        float cardHorizontalSpread = index * horizontalSpread;
+        float horizontalSpreadCenter = maxHorizontalSpread / 2;
+        float verticalArcNormalized = parameters.CardArcCurve.Evaluate(Mathf.Abs(1 - index / (float)(total != 0 ? total : 1) * 2));
+        float verticalArc = verticalArcNormalized * parameters.CardArcLift;
+        float vertialOffset = canvasRect.height / parameters.CardOffsetFractionOfTheScreen.y * parameters.CardOffsetFractionOfTheScreen.x;
+        float cardHover = (isCardHovered ? parameters.HoverUp : 0);
+
+        Vector3 newPosition = new Vector2(canvasRect.center.x, 0)
+            + Vector2.up * vertialOffset
+            + Vector2.right * cardHorizontalSpread
+            - Vector2.right * horizontalSpreadCenter
+            - Vector2.up * verticalArc
+            + Vector2.up * cardHover
+            ;
+
+        return newPosition;
+    }
+
+    private Quaternion CalculateRotationForCard(int index, int total, Card card)
+    {
+        bool isCardHovered = HoveredCard == card;
+        return isCardHovered ? Quaternion.identity :
+            Quaternion.Euler(
+                0, 0,
+                (index - (float)total / 2) * Controller.Parameters.PerCardRotation);
+
+    }
+
     public ICardControllerState Update()
     {
         var parameters = Controller.Parameters;
@@ -51,40 +87,16 @@ class IdleState : ICardControllerState
                 inactiveCardsEncountered += 1;
                 continue;
             }
-
-            i -= inactiveCardsEncountered;
             int activeCardIdx = i - inactiveCardsEncountered;
 
-            Rect canvasRect = Controller.Canvas.pixelRect;
-
-            bool isCardHovered = HoveredCard == card;
-            float horizontalSpread = Mathf.Min(parameters.CardSpread / activeCardCount, parameters.CardPrefferedDistance);
-            float maxHorizontalSpread = horizontalSpread * activeCardCount;
-            float cardHorizontalSpread = activeCardIdx * horizontalSpread;
-            float horizontalCenter = maxHorizontalSpread / 2;
-            float verticalArcNormalized = parameters.CardArcCurve.Evaluate(Mathf.Abs(1 - activeCardIdx / (float)(activeCardCount != 0 ? activeCardCount : 1) * 2));
-            float verticalArc = verticalArcNormalized * parameters.CardArcLift;
-            float vertialOffset = canvasRect.height / parameters.CardOffsetFractionOfTheScreen.y * parameters.CardOffsetFractionOfTheScreen.x;
-            float cardHover = (isCardHovered ? parameters.HoverUp : 0);
-
-            Vector3 newPosition = new Vector2(canvasRect.center.x, 0)
-                + Vector2.up * vertialOffset
-                + Vector2.right * cardHorizontalSpread
-                - Vector2.right * horizontalCenter
-                - Vector2.up * verticalArc
-                + Vector2.up * cardHover;
-
+            var position = CalculatePositionForCard(activeCardIdx, activeCardCount, card);
             card.transform.position =
                 Vector3.Lerp(
                     card.transform.position,
-                    newPosition,
+                    position,
                     Time.deltaTime * parameters.CardMovementSmoothness);
 
-            var rotation = isCardHovered ? Quaternion.identity :
-                Quaternion.Euler(
-                    0, 0,
-                    (i - (float)activeCardCount / 2) * parameters.PerCardRotation);
-
+            var rotation = CalculateRotationForCard(activeCardIdx, activeCardCount, card);
             card.transform.rotation = Quaternion.Lerp(card.transform.rotation, rotation, Time.deltaTime * parameters.CardRotationSpeed);
         }
 
@@ -101,9 +113,7 @@ class IdleState : ICardControllerState
     {
         HoveredCard = null;
         for (int i = 0; i < this.Controller.Cards.Count; i++)
-        {
             this.Controller.Cards[i].transform.SetSiblingIndex(i);
-        }
     }
 }
 
