@@ -17,7 +17,7 @@ public class CardAnimationParameters
     // stripes and .x defines at the bottom of which stripe the cards are
     public Vector2Int CardOffsetFractionOfTheScreen;
     public float CardSpread;
-    public float MaxCardRotation;
+    public float PerCardRotation;
     public AnimationCurve CardArcCurve;
     public float CardArcLift;
     public float CardMovementSmoothness;
@@ -39,35 +39,40 @@ class IdleState : ICardControllerState
     public ICardControllerState Update()
     {
         var parameters = Controller.Parameters;
-        var cardCount = Controller.Cards.Count;
-        var cards = Controller.Cards;
-
-        int inactiveCards = cards.FindAll((card) => !card.gameObject.activeInHierarchy).Count;
-
-        // TODO: center this bullshit on the screen
+        int inactiveCards = Controller.Cards.FindAll((card) => !card.gameObject.activeInHierarchy).Count;
         int inactiveCardsEncountered = 0;
-        int iters = cardCount - 1 - inactiveCards;
-        for (int i = 0; i < cardCount; i++)
+        int activeCardCount = Controller.Cards.Count - 1 - inactiveCards;
+
+        for (int i = 0; i < Controller.Cards.Count; i++)
         {
-            if (!cards[i].gameObject.activeInHierarchy) {
+            Card card = Controller.Cards[i];
+            if (!card.gameObject.activeInHierarchy)
+            {
                 inactiveCardsEncountered += 1;
                 continue;
             }
 
-            Card card = cards[i];
-            bool isCardHovered = HoveredCard == card;
             i -= inactiveCardsEncountered;
-
-            float horizontalSpread = Mathf.Min(parameters.CardSpread / iters, parameters.CardPrefferedDistance);
-            float maxHorizontalSpread = horizontalSpread * iters;
+            int activeCardIdx = i - inactiveCardsEncountered;
 
             Rect canvasRect = Controller.Canvas.pixelRect;
-            Vector3 newPosition = new Vector2(canvasRect.center.x, 0)
-                + Vector2.up * canvasRect.height / parameters.CardOffsetFractionOfTheScreen.y * parameters.CardOffsetFractionOfTheScreen.x
-                + Vector2.right * (i * horizontalSpread - maxHorizontalSpread / 2)
-                - Vector2.up * (parameters.CardArcCurve.Evaluate(Mathf.Abs(1 - i / (float)(iters != 0 ? iters : 1) * 2)) - 1) * parameters.CardArcLift
-                + (isCardHovered ? (Vector2.up * parameters.HoverUp) : Vector3.zero);
 
+            bool isCardHovered = HoveredCard == card;
+            float horizontalSpread = Mathf.Min(parameters.CardSpread / activeCardCount, parameters.CardPrefferedDistance);
+            float maxHorizontalSpread = horizontalSpread * activeCardCount;
+            float cardHorizontalSpread = activeCardIdx * horizontalSpread;
+            float horizontalCenter = maxHorizontalSpread / 2;
+            float verticalArcNormalized = parameters.CardArcCurve.Evaluate(Mathf.Abs(1 - activeCardIdx / (float)(activeCardCount != 0 ? activeCardCount : 1) * 2));
+            float verticalArc = verticalArcNormalized * parameters.CardArcLift;
+            float vertialOffset = canvasRect.height / parameters.CardOffsetFractionOfTheScreen.y * parameters.CardOffsetFractionOfTheScreen.x;
+            float cardHover = (isCardHovered ? parameters.HoverUp : 0);
+
+            Vector3 newPosition = new Vector2(canvasRect.center.x, 0)
+                + Vector2.up * vertialOffset
+                + Vector2.right * cardHorizontalSpread
+                - Vector2.right * horizontalCenter
+                - Vector2.up * verticalArc
+                + Vector2.up * cardHover;
 
             card.transform.position =
                 Vector3.Lerp(
@@ -78,10 +83,9 @@ class IdleState : ICardControllerState
             var rotation = isCardHovered ? Quaternion.identity :
                 Quaternion.Euler(
                     0, 0,
-                    (i - (float)iters / 2) * parameters.MaxCardRotation);
+                    (i - (float)activeCardCount / 2) * parameters.PerCardRotation);
 
             card.transform.rotation = Quaternion.Lerp(card.transform.rotation, rotation, Time.deltaTime * parameters.CardRotationSpeed);
-            i += inactiveCardsEncountered;
         }
 
         return this;
