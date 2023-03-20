@@ -24,6 +24,7 @@ public class CardAnimationParameters
     public float CardRotationSpeed;
     public float HoverUp;
     public float CardPrefferedDistance;
+    public float VerticalDownOffsetWhenSelected;
 }
 
 class PassiveState : ICardControllerState
@@ -69,22 +70,38 @@ class PassiveState : ICardControllerState
 
     }
 
+    protected virtual ICardControllerState CardPreUpdate(
+        ref bool cancel, Card card, int activeCardCount, int idx) => this;
+
     public ICardControllerState Update()
     {
         var parameters = Controller.Parameters;
-        int inactiveCards = Controller.Cards.FindAll((card) => !card.gameObject.activeInHierarchy).Count;
-        int inactiveCardsEncountered = 0;
-        int activeCardCount = Controller.Cards.Count - 1 - inactiveCards;
+        int skippedUpdateCount = Controller.Cards.FindAll((card) => !card.gameObject.activeInHierarchy).Count;
+        int updatesSkipped = 0;
+        int activeCardCount = Controller.Cards.Count - 1 - skippedUpdateCount;
 
         for (int i = 0; i < Controller.Cards.Count; i++)
         {
             Card card = Controller.Cards[i];
+
+
             if (!card.gameObject.activeInHierarchy)
             {
-                inactiveCardsEncountered += 1;
+                updatesSkipped++;
                 continue;
             }
-            int activeCardIdx = i - inactiveCardsEncountered;
+            int activeCardIdx = i - updatesSkipped;
+
+            bool interrupted = false;
+            var nextState = CardPreUpdate(ref interrupted, card, activeCardCount, activeCardIdx);
+            if (nextState != this)
+                return nextState;
+
+            if (interrupted)
+            {
+                skippedUpdateCount++;
+                continue;
+            }
 
             var position = CalculatePositionForCard(activeCardIdx, activeCardCount, card);
             card.transform.position =
@@ -129,6 +146,14 @@ class IdleState : PassiveState
             : base.CalculateRotationForCard(index, total, card);
     }
 
+    protected override ICardControllerState CardPreUpdate(ref bool cancel, Card card, int activeCardCount, int idx)
+    {
+        if (Input.GetMouseButtonDown(0) && HoveredCard != null)
+            return new CardSelectedState(Controller, HoveredCard);
+        else
+            return this;
+    }
+
     public override void NotifyEnterCard(Card card)
     {
         HoveredCard = card;
@@ -143,21 +168,49 @@ class IdleState : PassiveState
     }
 }
 
-class CardSelectedState : ICardControllerState
+class CardSelectedState : PassiveState
 {
-    public void NotifyEnterCard(Card card)
+    public Card selected;
+
+    public CardSelectedState(CardsController controller, Card selected) : base(controller)
     {
-        throw new System.NotImplementedException();
+        this.selected = selected;
     }
 
-    public void NotifyExitCard(Card card)
+    protected Vector2 CalculatePositionForSelectedCard()
     {
-        throw new System.NotImplementedException();
+        var rect = Controller.Canvas.pixelRect;
+        return new Vector2(rect.x + rect.width / 2, rect.y + rect.height / 2);
     }
 
-    public ICardControllerState Update()
+    protected override ICardControllerState CardPreUpdate(ref bool cancel, Card card, int activeCardCount, int idx)
     {
-        throw new System.NotImplementedException();
+        if (Input.GetMouseButtonDown(1))
+            return new IdleState(Controller);
+        if (Input.GetKeyDown(KeyCode.K) && card == selected) {
+            Controller.Cards.Remove(card);
+            UnityEngine.Object.Destroy(card.gameObject);
+            return new IdleState(Controller);
+        }
+        else
+            return this;
+    }
+
+    protected override Vector2 CalculatePositionForCard(int index, int total, Card card)
+    {
+        bool isSelected = card == selected;
+        return isSelected
+            ? CalculatePositionForSelectedCard()
+            : base.CalculatePositionForCard(index, total, card)
+                + (Vector2.down * Controller.Parameters.VerticalDownOffsetWhenSelected);
+    }
+
+    protected override Quaternion CalculateRotationForCard(int index, int total, Card card)
+    {
+        bool isSelected = card == selected;
+        return isSelected
+            ? Quaternion.identity 
+            : base.CalculateRotationForCard(index, total, card);
     }
 }
 
