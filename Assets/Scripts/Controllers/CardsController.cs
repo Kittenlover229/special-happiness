@@ -12,18 +12,31 @@ public interface ICardControllerState
 [System.Serializable]
 public class CardAnimationParameters
 {
+    [Header("Passive")]
     // So this is UI, so position of the cards on the screen is defined rather 
     // weirdly. The screen is separated into .y equally sized horizontal 
     // stripes and .x defines at the bottom of which stripe the cards are
     public Vector2Int CardOffsetFractionOfTheScreen;
-    public float CardSpread;
-    public float PerCardRotation;
-    public AnimationCurve CardArcCurve;
-    public float CardArcLift;
-    public float CardMovementSmoothness;
-    public float CardRotationSpeed;
-    public float HoverUp;
+    [Header("Controls which distance apart the cards prefer to keep. If there are too many cards they are cramped according to Card Spread")]
     public float CardPrefferedDistance;
+    [Header("Maximum horizontal amount in pixels that the cards can span")]
+    public float CardSpread;
+    [Header("The card is rotated dy this menu degrees the further it is from the center")]
+    public float PerCardRotation;
+    [Header("Curve which controls how the cards are held in the hand, reflected at y = 1")]
+    public AnimationCurve CardArcCurve;
+    [Header("Reflects the vertical offset of each card according to the curve, 0 at the edges and 1 * this at center")]
+    public float CardArcLift;
+
+    [Header("Controls how fast the cards translates around")]
+    public float CardMovementSmoothness;
+    [Header("Controls how fast the cards rotate")]
+    public float CardRotationSpeed;
+
+    [Header("Idle")]
+    public float HoverUp;
+
+    [Header("Selected")]
     public float VerticalDownOffsetWhenSelected;
 }
 
@@ -187,7 +200,8 @@ class CardSelectedState : PassiveState
     {
         if (Input.GetMouseButtonDown(1))
             return new IdleState(Controller);
-        if (Input.GetKeyDown(KeyCode.K) && card == selected) {
+        if (Input.GetKeyDown(KeyCode.K) && card == selected)
+        {
             Controller.Cards.Remove(card);
             UnityEngine.Object.Destroy(card.gameObject);
             return new IdleState(Controller);
@@ -209,7 +223,7 @@ class CardSelectedState : PassiveState
     {
         bool isSelected = card == selected;
         return isSelected
-            ? Quaternion.identity 
+            ? Quaternion.identity
             : base.CalculateRotationForCard(index, total, card);
     }
 }
