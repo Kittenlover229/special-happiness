@@ -26,21 +26,22 @@ public class CardAnimationParameters
     public float CardPrefferedDistance;
 }
 
-class IdleState : ICardControllerState
+class PassiveState : ICardControllerState
 {
-    CardsController Controller;
-    Card HoveredCard = null;
-
-    public IdleState(CardsController controller)
+    public PassiveState(CardsController controller)
     {
         this.Controller = controller;
     }
 
-    private Vector2 CalculatePositionForCard(int index, int total, Card card)
+    public CardsController Controller { get; }
+
+    public virtual void NotifyEnterCard(Card card) { }
+    public virtual void NotifyExitCard(Card card) { }
+
+    protected virtual Vector2 CalculatePositionForCard(int index, int total, Card card)
     {
         var parameters = Controller.Parameters;
         Rect canvasRect = Controller.Canvas.pixelRect;
-        bool isCardHovered = HoveredCard == card;
 
         float horizontalSpread = Mathf.Min(parameters.CardSpread / total, parameters.CardPrefferedDistance);
         float maxHorizontalSpread = horizontalSpread * total;
@@ -49,26 +50,22 @@ class IdleState : ICardControllerState
         float verticalArcNormalized = parameters.CardArcCurve.Evaluate(Mathf.Abs(1 - index / (float)(total != 0 ? total : 1) * 2));
         float verticalArc = verticalArcNormalized * parameters.CardArcLift;
         float vertialOffset = canvasRect.height / parameters.CardOffsetFractionOfTheScreen.y * parameters.CardOffsetFractionOfTheScreen.x;
-        float cardHover = (isCardHovered ? parameters.HoverUp : 0);
 
         Vector3 newPosition = new Vector2(canvasRect.center.x, 0)
             + Vector2.up * vertialOffset
             + Vector2.right * cardHorizontalSpread
             - Vector2.right * horizontalSpreadCenter
             - Vector2.up * verticalArc
-            + Vector2.up * cardHover
             ;
 
         return newPosition;
     }
 
-    private Quaternion CalculateRotationForCard(int index, int total, Card card)
+    protected virtual Quaternion CalculateRotationForCard(int index, int total, Card card)
     {
-        bool isCardHovered = HoveredCard == card;
-        return isCardHovered ? Quaternion.identity :
-            Quaternion.Euler(
-                0, 0,
-                (index - (float)total / 2) * Controller.Parameters.PerCardRotation);
+        return Quaternion.Euler(
+                        0, 0,
+                        (index - (float)total / 2) * Controller.Parameters.PerCardRotation);
 
     }
 
@@ -100,20 +97,67 @@ class IdleState : ICardControllerState
             card.transform.rotation = Quaternion.Lerp(card.transform.rotation, rotation, Time.deltaTime * parameters.CardRotationSpeed);
         }
 
+        // XXX: debug only
+        if (Input.GetKeyDown(KeyCode.K))
+            return new IdleState(Controller);
+
         return this;
     }
+}
 
-    public void NotifyEnterCard(Card card)
+class IdleState : PassiveState
+{
+    Card HoveredCard = null;
+
+    public IdleState(CardsController controller) : base(controller) { }
+
+    bool isHovered(Card card) => card == HoveredCard;
+
+    protected override Vector2 CalculatePositionForCard(int index, int total, Card card)
+    {
+        return
+            base.CalculatePositionForCard(index, total, card)
+                + (isHovered(card)
+                        ? Vector2.up * Controller.Parameters.HoverUp
+                        : Vector2.zero);
+    }
+
+    protected override Quaternion CalculateRotationForCard(int index, int total, Card card)
+    {
+        return isHovered(card)
+            ? Quaternion.identity
+            : base.CalculateRotationForCard(index, total, card);
+    }
+
+    public override void NotifyEnterCard(Card card)
     {
         HoveredCard = card;
         card.transform.SetAsLastSibling();
     }
 
-    public void NotifyExitCard(Card card)
+    public override void NotifyExitCard(Card card)
     {
         HoveredCard = null;
         for (int i = 0; i < this.Controller.Cards.Count; i++)
             this.Controller.Cards[i].transform.SetSiblingIndex(i);
+    }
+}
+
+class CardSelectedState : ICardControllerState
+{
+    public void NotifyEnterCard(Card card)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void NotifyExitCard(Card card)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public ICardControllerState Update()
+    {
+        throw new System.NotImplementedException();
     }
 }
 
@@ -125,15 +169,10 @@ public class CardsController : MonoBehaviour
     public List<Card> Cards = new List<Card>();
     public ICardControllerState State = null;
 
-    void Awake()
-    {
-        State = new IdleState(this);
-    }
-
     void Update()
     {
         if (State == null)
-            State = new IdleState(this);
+            State = new PassiveState(this);
         State = State.Update();
     }
 }
