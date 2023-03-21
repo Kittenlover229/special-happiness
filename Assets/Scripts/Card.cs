@@ -7,7 +7,6 @@ public class Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public RectTransform rect;
     public bool MouseOver;
 
-
     public void OnPointerEnter(PointerEventData eventData) {
         this.master.State.NotifyEnterCard(this);
     }

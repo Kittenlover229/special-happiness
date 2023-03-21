@@ -32,12 +32,13 @@ public class CardAnimationParameters
     public float CardMovementSmoothness;
     [Tooltip("Controls how fast the cards rotate")]
     public float CardRotationSpeed;
+    [Tooltip("The amount by which the cards are shifted down when inactive")]
+    public float VerticalDownOffsetWhenInactive;
 
     [Header("Idle")]
     public float HoverUp;
 
     [Header("Selected")]
-    public float VerticalDownOffsetWhenSelected;
     [Tooltip("Offset of the selected card from center. The topleft is (-0.5, -0.5) and the top right is (0.5, 0.5)")]
     public Vector2 CardSelectedOffset;
 }
@@ -58,6 +59,7 @@ class PassiveState : ICardControllerState
     {
         var parameters = Controller.Parameters;
         Rect canvasRect = Controller.Canvas.pixelRect;
+        var isInLowerThird = Input.mousePosition.y <= canvasRect.height / 3;
 
         float horizontalSpread = Mathf.Min(parameters.CardSpread / total, parameters.CardPrefferedDistance);
         float maxHorizontalSpread = horizontalSpread * total;
@@ -66,12 +68,14 @@ class PassiveState : ICardControllerState
         float verticalArcNormalized = parameters.CardArcCurve.Evaluate(Mathf.Abs(1 - index / (float)(total != 0 ? total : 1) * 2));
         float verticalArc = verticalArcNormalized * parameters.CardArcLift;
         float vertialOffset = canvasRect.height / parameters.CardOffsetFractionOfTheScreen.y * parameters.CardOffsetFractionOfTheScreen.x;
-
+        float inactiveOffset = isInLowerThird ? 0 : parameters.VerticalDownOffsetWhenInactive;
+        
         Vector3 newPosition = new Vector2(canvasRect.center.x, 0)
             + Vector2.up * vertialOffset
             + Vector2.right * cardHorizontalSpread
             - Vector2.up * verticalArc
             - Vector2.right * horizontalSpreadCenter
+            - Vector2.up * inactiveOffset
             ;
 
         return newPosition;
@@ -218,8 +222,7 @@ class CardSelectedState : PassiveState
         bool isSelected = card == selected;
         return isSelected
             ? CalculatePositionForSelectedCard()
-            : base.CalculatePositionForCard(index, total, card)
-                + (Vector2.down * Controller.Parameters.VerticalDownOffsetWhenSelected);
+            : base.CalculatePositionForCard(index, total, card);
     }
 
     protected override Quaternion CalculateRotationForCard(int index, int total, Card card)
@@ -238,6 +241,7 @@ public class CardsController : MonoBehaviour
     public CardAnimationParameters Parameters;
     public List<Card> Cards = new List<Card>();
     public ICardControllerState State = null;
+
 
     void Update()
     {
