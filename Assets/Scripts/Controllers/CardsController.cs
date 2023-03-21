@@ -38,6 +38,8 @@ public class CardAnimationParameters
 
     [Header("Selected")]
     public float VerticalDownOffsetWhenSelected;
+    [Tooltip("Offset of the selected card from center. The topleft is (-0.5, -0.5) and the top right is (0.5, 0.5)")]
+    public Vector2 CardSelectedOffset;
 }
 
 class PassiveState : ICardControllerState
@@ -193,7 +195,9 @@ class CardSelectedState : PassiveState
     protected Vector2 CalculatePositionForSelectedCard()
     {
         var rect = Controller.Canvas.pixelRect;
-        return new Vector2(rect.x + rect.width / 2, rect.y + rect.height / 2);
+        var cardSelectedOffset = Controller.Parameters.CardSelectedOffset;
+        var offset = new Vector2(cardSelectedOffset.x * rect.width, cardSelectedOffset.y * rect.height);
+        return (Vector2)Input.mousePosition + offset;
     }
 
     protected override ICardControllerState CardPreUpdate(ref bool cancel, Card card, int activeCardCount, int idx)
