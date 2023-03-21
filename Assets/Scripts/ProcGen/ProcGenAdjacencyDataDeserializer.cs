@@ -4,56 +4,61 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Object = UnityEngine.Object;
 
-public class ProcGenAdjacencyDataDeserializer : MonoBehaviour
+namespace ProcGen
 {
-    public Asset[] Assets;
+	public class ProcGenAdjacencyDataDeserializer : MonoBehaviour
+	{
+		public ProcGenAsset[] Assets;
 
-    public void Start()
-    {
-        Assets = LoadJsonAssetArr("ProcGen/basic2d");
+		public ProcGenAsset[] Deserialize(string _path)
+		{
+			Assets = LoadJsonAssetArr(_path);
 
-        Dictionary<string, Sprite> sprites = LoadSprites(Assets[0].FileName);
+			Dictionary<string, Sprite> sprites = LoadSprites(Assets[0].FileName);
 
-        foreach (Asset asset in Assets)
-        {
-            asset.Sprite = sprites[asset.AssetName];
-        }
-    }
+			foreach (ProcGenAsset asset in Assets)
+			{
+				asset.Sprite = Resources.Load<TileBase>(asset.FileName + asset.AssetName);
+			}
+			
+			return Assets;
+		}
+		
+		public ProcGenAsset[] LoadJsonAssetArr(string _path)
+		{
+			TextAsset assetArr = Resources.Load<TextAsset>(_path);
 
-    public Asset[] LoadJsonAssetArr(string _path)
-    {
-        TextAsset assetArr = Resources.Load<TextAsset>(_path);
+			ProcGenAsset[] assets = JsonUtility.FromJson<Root>(assetArr.text).Asset;
 
-        Asset[] assets = JsonUtility.FromJson<Root>(assetArr.text).Asset;
+			return assets;
+		}
 
-        return assets;
-    }
+		public Dictionary<string, Sprite> LoadSprites(string _path)
+		{
+			Sprite[] sprites = Resources.LoadAll<Sprite>(_path);
 
-    public Dictionary<string, Sprite> LoadSprites(string _path)
-    {
-        Sprite[] sprites = Resources.LoadAll<Sprite>(_path);
+			return sprites.ToDictionary(sprite => sprite.name);
+		}
 
-        return sprites.ToDictionary(sprite => sprite.name);
-    }
-    
-    
+	}
+	
+	[Serializable]
+	public class ProcGenAsset
+	{
+		public string FileName;
+		public string AssetName;
+		public string[] Adjacency;
+		public string[] Tags;
 
-    [Serializable]
-    public class Asset
-    {
-        public string FileName;
-        public string AssetName;
-        public string[] Adjacency;
-        public string[] Tags;
+		public TileBase Sprite;
+	}
 
-        public Sprite Sprite;
-    }
-
-    [Serializable]
-    public class Root
-    {
-        public Asset[] Asset;
-    }
+	[Serializable]
+	public class Root
+	{
+		public ProcGenAsset[] Asset;
+	}
 }
