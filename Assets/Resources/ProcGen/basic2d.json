@@ -2,7 +2,147 @@
   "Asset": [
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_0",
+      "AssetName": "assetsDeep_0",
+      "Adjacency": [
+        "DeepGrass",
+        "Grass",
+        "Grass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_1",
+      "Adjacency": [
+        "Grass",
+        "DeepGrass",
+        "Grass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_2",
+      "Adjacency": [
+        "Grass",
+        "Grass",
+        "DeepGrass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_3",
+      "Adjacency": [
+        "Grass",
+        "Grass",
+        "Grass",
+        "DeepGrass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_4",
+      "Adjacency": [
+        "DeepGrass",
+        "DeepGrass",
+        "Grass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_5",
+      "Adjacency": [
+        "Grass",
+        "DeepGrass",
+        "DeepGrass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_6",
+      "Adjacency": [
+        "Grass",
+        "Grass",
+        "DeepGrass",
+        "DeepGrass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_7",
+      "Adjacency": [
+        "DeepGrass",
+        "Grass",
+        "Grass",
+        "DeepGrass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_8",
+      "Adjacency": [
+        "Grass",
+        "DeepGrass",
+        "DeepGrass",
+        "DeepGrass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_9",
+      "Adjacency": [
+        "DeepGrass",
+        "Grass",
+        "DeepGrass",
+        "DeepGrass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_10",
+      "Adjacency": [
+        "DeepGrass",
+        "DeepGrass",
+        "Grass",
+        "DeepGrass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_11",
+      "Adjacency": [
+        "DeepGrass",
+        "DeepGrass",
+        "DeepGrass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_12",
+      "Adjacency": [
+        "Grass",
+        "DeepGrass",
+        "Grass",
+        "DeepGrass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_13",
+      "Adjacency": [
+        "DeepGrass",
+        "Grass",
+        "DeepGrass",
+        "Grass"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_14",
       "Adjacency": [
         "Grass",
         "Grass",
@@ -12,7 +152,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_1",
+      "AssetName": "assetsDeep_15",
       "Adjacency": [
         "Mountain",
         "Grass",
@@ -22,7 +162,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_2",
+      "AssetName": "assetsDeep_16",
       "Adjacency": [
         "Grass",
         "Mountain",
@@ -32,7 +172,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_3",
+      "AssetName": "assetsDeep_17",
       "Adjacency": [
         "Grass",
         "Grass",
@@ -42,7 +182,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_4",
+      "AssetName": "assetsDeep_18",
       "Adjacency": [
         "Grass",
         "Grass",
@@ -52,7 +192,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_5",
+      "AssetName": "assetsDeep_19",
       "Adjacency": [
         "Mountain",
         "Mountain",
@@ -62,7 +202,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_6",
+      "AssetName": "assetsDeep_20",
       "Adjacency": [
         "Grass",
         "Mountain",
@@ -72,7 +212,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_7",
+      "AssetName": "assetsDeep_21",
       "Adjacency": [
         "Grass",
         "Grass",
@@ -82,7 +222,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_8",
+      "AssetName": "assetsDeep_22",
       "Adjacency": [
         "Mountain",
         "Grass",
@@ -92,7 +232,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_9",
+      "AssetName": "assetsDeep_23",
       "Adjacency": [
         "Grass",
         "Mountain",
@@ -102,7 +242,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_10",
+      "AssetName": "assetsDeep_24",
       "Adjacency": [
         "Mountain",
         "Grass",
@@ -112,7 +252,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_11",
+      "AssetName": "assetsDeep_25",
       "Adjacency": [
         "Mountain",
         "Mountain",
@@ -122,7 +262,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_12",
+      "AssetName": "assetsDeep_26",
       "Adjacency": [
         "Mountain",
         "Mountain",
@@ -132,7 +272,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_13",
+      "AssetName": "assetsDeep_27",
       "Adjacency": [
         "Grass",
         "Mountain",
@@ -142,7 +282,7 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_14",
+      "AssetName": "assetsDeep_28",
       "Adjacency": [
         "Mountain",
         "Grass",
@@ -152,10 +292,150 @@
     },
     {
       "FileName": "ProcGen/Tiles/",
-      "AssetName": "sideTilesAll_15",
+      "AssetName": "assetsDeep_29",
+      "Adjacency": [
+        "DeepMountain",
+        "Mountain",
+        "DeepMountain",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_30",
+      "Adjacency": [
+        "Mountain",
+        "DeepMountain",
+        "Mountain",
+        "DeepMountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_31",
       "Adjacency": [
         "Mountain",
         "Mountain",
+        "Mountain",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_32",
+      "Adjacency": [
+        "Mountain",
+        "DeepMountain",
+        "DeepMountain",
+        "DeepMountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_33",
+      "Adjacency": [
+        "DeepMountain",
+        "Mountain",
+        "DeepMountain",
+        "DeepMountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_34",
+      "Adjacency": [
+        "DeepMountain",
+        "DeepMountain",
+        "Mountain",
+        "DeepMountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_35",
+      "Adjacency": [
+        "DeepMountain",
+        "DeepMountain",
+        "DeepMountain",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_36",
+      "Adjacency": [
+        "Mountain",
+        "DeepMountain",
+        "DeepMountain",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_37",
+      "Adjacency": [
+        "Mountain",
+        "Mountain",
+        "DeepMountain",
+        "DeepMountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_38",
+      "Adjacency": [
+        "DeepMountain",
+        "Mountain",
+        "Mountain",
+        "DeepMountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_39",
+      "Adjacency": [
+        "DeepMountain",
+        "DeepMountain",
+        "Mountain",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_40",
+      "Adjacency": [
+        "DeepMountain",
+        "Mountain",
+        "Mountain",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_41",
+      "Adjacency": [
+        "Mountain",
+        "Mountain",
+        "DeepMountain",
+        "Mountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_42",
+      "Adjacency": [
+        "Mountain",
+        "Mountain",
+        "Mountain",
+        "DeepMountain"
+      ]
+    },
+    {
+      "FileName": "ProcGen/Tiles/",
+      "AssetName": "assetsDeep_43",
+      "Adjacency": [
+        "Mountain",
+        "DeepMountain",
         "Mountain",
         "Mountain"
       ]
