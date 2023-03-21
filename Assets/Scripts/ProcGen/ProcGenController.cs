@@ -37,5 +37,36 @@ namespace ProcGen
 				} 
 			}
 		}
+		
+		
+		public bool TryGetTile(Vector3 _worldPos, out Tile tile)
+		{
+			Vector3Int position = Tilemap.WorldToCell(_worldPos);
+			try
+			{
+				tile = Board[position.x, position.y];
+				return true;
+			}
+			catch (IndexOutOfRangeException)
+			{
+				tile = default(Tile);
+				return false;
+			}
+		}
+		
+		public bool TrySetTile(Vector3 _worldPos, Tile tile)
+		{
+			Vector3Int position = Tilemap.WorldToCell(_worldPos);
+			try
+			{
+				Board[position.x, position.y] = tile;
+				return true;
+			}
+			catch (IndexOutOfRangeException)
+			{
+				tile = default(Tile);
+				return false;
+			}
+		}
 	}
 }
