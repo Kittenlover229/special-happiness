@@ -5,6 +5,7 @@ public class CameraController : MonoBehaviour
     public Camera Camera;
     public Transform Pivot;
     public float CameraMovementSpeed;
+    public float CameraMovementDampening;
 
     void Start()
     {
@@ -13,8 +14,11 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        var horizontal = Input.GetAxisRaw("Horizontal");
-        var vertical = Input.GetAxisRaw("Vertical");
+        var horizontal = Input.GetAxis("Horizontal");
+        horizontal = Mathf.Pow(Mathf.Abs(horizontal), CameraMovementDampening) * Mathf.Sign(horizontal);
+
+        var vertical = Input.GetAxis("Vertical");
+        vertical = Mathf.Pow(Mathf.Abs(vertical), CameraMovementDampening) * Mathf.Sign(vertical);
 
         var verticalAxis = vertical * Vector3.ProjectOnPlane(Camera.transform.forward, Vector3.up).normalized;
         var horizontalAxis = horizontal * Vector3.ProjectOnPlane(Camera.transform.right, Vector3.up).normalized;

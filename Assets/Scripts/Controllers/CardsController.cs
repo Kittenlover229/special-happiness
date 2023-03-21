@@ -17,20 +17,20 @@ public class CardAnimationParameters
     // weirdly. The screen is separated into .y equally sized horizontal 
     // stripes and .x defines at the bottom of which stripe the cards are
     public Vector2Int CardOffsetFractionOfTheScreen;
-    [Header("Controls which distance apart the cards prefer to keep. If there are too many cards they are cramped according to Card Spread")]
+    [Tooltip("Controls which distance apart the cards prefer to keep. If there are too many cards they are cramped according to Card Spread")]
     public float CardPrefferedDistance;
-    [Header("Maximum horizontal amount in pixels that the cards can span")]
+    [Tooltip("Maximum horizontal amount in pixels that the cards can span")]
     public float CardSpread;
-    [Header("The card is rotated dy this menu degrees the further it is from the center")]
+    [Tooltip("The card is rotated dy this menu degrees the further it is from the center")]
     public float PerCardRotation;
-    [Header("Curve which controls how the cards are held in the hand, reflected at y = 1")]
+    [Tooltip("Curve which controls how the cards are held in the hand, reflected at y = 1")]
     public AnimationCurve CardArcCurve;
-    [Header("Reflects the vertical offset of each card according to the curve, 0 at the edges and 1 * this at center")]
+    [Tooltip("Reflects the vertical offset of each card according to the curve, 0 at the edges and 1 * this at center")]
     public float CardArcLift;
 
-    [Header("Controls how fast the cards translates around")]
+    [Tooltip("Controls how fast the cards translates around")]
     public float CardMovementSmoothness;
-    [Header("Controls how fast the cards rotate")]
+    [Tooltip("Controls how fast the cards rotate")]
     public float CardRotationSpeed;
 
     [Header("Idle")]
@@ -68,8 +68,8 @@ class PassiveState : ICardControllerState
         Vector3 newPosition = new Vector2(canvasRect.center.x, 0)
             + Vector2.up * vertialOffset
             + Vector2.right * cardHorizontalSpread
-            - Vector2.right * horizontalSpreadCenter
             - Vector2.up * verticalArc
+            - Vector2.right * horizontalSpreadCenter
             ;
 
         return newPosition;
@@ -200,14 +200,13 @@ class CardSelectedState : PassiveState
     {
         if (Input.GetMouseButtonDown(1))
             return new IdleState(Controller);
-        if (Input.GetKeyDown(KeyCode.K) && card == selected)
-        {
-            Controller.Cards.Remove(card);
-            UnityEngine.Object.Destroy(card.gameObject);
-            return new IdleState(Controller);
-        }
-        else
+
+        if (card != selected || !Input.GetKeyDown(KeyCode.K))
             return this;
+
+        Controller.Cards.Remove(card);
+        UnityEngine.Object.Destroy(card.gameObject);
+        return new IdleState(Controller);
     }
 
     protected override Vector2 CalculatePositionForCard(int index, int total, Card card)
