@@ -69,7 +69,7 @@ class PassiveState : ICardControllerState
         float verticalArc = verticalArcNormalized * parameters.CardArcLift;
         float vertialOffset = canvasRect.height / parameters.CardOffsetFractionOfTheScreen.y * parameters.CardOffsetFractionOfTheScreen.x;
         float inactiveOffset = isInLowerThird ? 0 : parameters.VerticalDownOffsetWhenInactive;
-        
+
         Vector3 newPosition = new Vector2(canvasRect.center.x, 0)
             + Vector2.up * vertialOffset
             + Vector2.right * cardHorizontalSpread
@@ -102,7 +102,6 @@ class PassiveState : ICardControllerState
         for (int i = 0; i < Controller.Cards.Count; i++)
         {
             Card card = Controller.Cards[i];
-
 
             if (!card.gameObject.activeInHierarchy)
             {
@@ -206,14 +205,24 @@ class CardSelectedState : PassiveState
 
     protected override ICardControllerState CardPreUpdate(ref bool cancel, Card card, int activeCardCount, int idx)
     {
+        RaycastHit hit;
+        if (Physics.Raycast(Controller.Camera.ScreenPointToRay(Input.mousePosition), out hit))
+        {
+            Controller.TileHightlight.transform.position = new Vector3(Mathf.Round(hit.point.x), 0, Mathf.Round(hit.point.z));
+            Controller.TileHightlight.SetActive(true);
+        }
+
         if (Input.GetMouseButtonDown(1))
+        {
+            Controller.TileHightlight.SetActive(false);
             return new IdleState(Controller);
+        }
 
         if (card != selected || !Input.GetKeyDown(KeyCode.K))
             return this;
 
         Controller.Cards.Remove(card);
-        UnityEngine.Object.Destroy(card.gameObject);
+        Object.Destroy(card.gameObject);
         return new IdleState(Controller);
     }
 
@@ -239,7 +248,9 @@ public class CardsController : MonoBehaviour
 {
     public Canvas Canvas;
     public CardAnimationParameters Parameters;
-    public List<Card> Cards = new List<Card>();
+    public List<Card> Cards = new();
+    public GameObject TileHightlight;
+    public Camera Camera;
     public ICardControllerState State = null;
 
 
