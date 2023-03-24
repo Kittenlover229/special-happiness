@@ -210,7 +210,8 @@ class CardSelectedState : PassiveState
         {
             Controller.TileHightlight.transform.position = new Vector3(Mathf.Round(hit.point.x), 0, Mathf.Round(hit.point.z));
             Controller.TileHightlight.SetActive(true);
-        }
+        } else
+            Controller.TileHightlight.SetActive(false);
 
         if (Input.GetMouseButtonDown(1))
         {
