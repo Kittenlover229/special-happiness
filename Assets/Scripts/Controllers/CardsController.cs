@@ -252,16 +252,24 @@ class CardSelectedState : PassiveState
     }
 }
 
-[ExecuteInEditMode]
 public class CardsController : MonoBehaviour
 {
     public Canvas Canvas;
     public CardAnimationParameters Parameters;
     public List<Card> Cards = new();
+    public GameObject CardPrefab;
     public GameObject TileHightlight;
     public Camera Camera;
     public ICardControllerState State = null;
 
+    public void AddCard(CardDescriptor desc) {
+        var newCard = Instantiate(CardPrefab, Vector3.zero, Quaternion.identity);
+        newCard.transform.SetParent(transform);
+        var card = newCard.GetComponent<Card>();
+        card.master = this;
+        card.EmplaceDescriptor(desc);
+        this.Cards.Add(card);
+    }
 
     void Update()
     {

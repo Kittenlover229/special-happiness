@@ -234,7 +234,7 @@ MonoBehaviour:
     m_Alignment: 5
     m_AlignByGeometry: 0
     m_RichText: 0
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Placeholder
@@ -250,7 +250,6 @@ GameObject:
   - component: {fileID: 6356820961201661251}
   - component: {fileID: 6933344764568646303}
   - component: {fileID: 4483689896988340911}
-  - component: {fileID: 8425370176757536210}
   - component: {fileID: 5768517500255927640}
   m_Layer: 5
   m_Name: Card
@@ -266,7 +265,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6712312908701348642}
-  m_LocalRotation: {x: -0.9852216, y: 0.08619577, z: -0.012900424, w: -0.14745283}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -127.89268}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -306,7 +305,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.34125906, g: 0.34125906, b: 0.34125906, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: -120, z: 0, w: 0}
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -330,57 +329,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 6712312908701348642}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff212d2636fa26073ae068b706c2f866, type: 3}
+  m_Script: {fileID: 11500000, guid: 3861da94c3419e444b7d99f70ecdefd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   master: {fileID: 0}
-  rect: {fileID: 0}
+  rect: {fileID: 4654292692843492907}
   MouseOver: 0
---- !u!61 &8425370176757536210
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6712312908701348642}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 200, y: 300}
-  m_EdgeRadius: 0
+  nameText: {fileID: 6780429218011053957}
+  descriptionText: {fileID: 3032651113335938038}
+  artworkRenderer: {fileID: 1729225176419873626}
 --- !u!61 &5768517500255927640
 BoxCollider2D:
   m_ObjectHideFlags: 0
