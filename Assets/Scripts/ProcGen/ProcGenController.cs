@@ -27,6 +27,15 @@ namespace ProcGen
 			SetTiles();
 		}
 
+		public void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.A))
+			{
+				Board = wfc.GenerateBoard(BoardDimensions.x, BoardDimensions.y);
+				SetTiles();
+			}
+		}
+
 		public void SetTiles()
 		{
 			for (int x = 0; x < BoardDimensions.x; x++)
