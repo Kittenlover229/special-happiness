@@ -32,12 +32,13 @@ public class CardAnimationParameters
     public float CardMovementSmoothness;
     [Tooltip("Controls how fast the cards rotate")]
     public float CardRotationSpeed;
+    [Tooltip("The amount by which the cards are shifted down when inactive")]
+    public float VerticalDownOffsetWhenInactive;
 
     [Header("Idle")]
     public float HoverUp;
 
     [Header("Selected")]
-    public float VerticalDownOffsetWhenSelected;
     [Tooltip("Offset of the selected card from center. The topleft is (-0.5, -0.5) and the top right is (0.5, 0.5)")]
     public Vector2 CardSelectedOffset;
 }
@@ -58,6 +59,7 @@ class PassiveState : ICardControllerState
     {
         var parameters = Controller.Parameters;
         Rect canvasRect = Controller.Canvas.pixelRect;
+        var isInLowerThird = Input.mousePosition.y <= canvasRect.height / 3;
 
         float horizontalSpread = Mathf.Min(parameters.CardSpread / total, parameters.CardPrefferedDistance);
         float maxHorizontalSpread = horizontalSpread * total;
@@ -66,12 +68,14 @@ class PassiveState : ICardControllerState
         float verticalArcNormalized = parameters.CardArcCurve.Evaluate(Mathf.Abs(1 - index / (float)(total != 0 ? total : 1) * 2));
         float verticalArc = verticalArcNormalized * parameters.CardArcLift;
         float vertialOffset = canvasRect.height / parameters.CardOffsetFractionOfTheScreen.y * parameters.CardOffsetFractionOfTheScreen.x;
+        float inactiveOffset = isInLowerThird ? 0 : parameters.VerticalDownOffsetWhenInactive;
 
         Vector3 newPosition = new Vector2(canvasRect.center.x, 0)
             + Vector2.up * vertialOffset
             + Vector2.right * cardHorizontalSpread
             - Vector2.up * verticalArc
             - Vector2.right * horizontalSpreadCenter
+            - Vector2.up * inactiveOffset
             ;
 
         return newPosition;
@@ -98,7 +102,6 @@ class PassiveState : ICardControllerState
         for (int i = 0; i < Controller.Cards.Count; i++)
         {
             Card card = Controller.Cards[i];
-
 
             if (!card.gameObject.activeInHierarchy)
             {
@@ -202,14 +205,25 @@ class CardSelectedState : PassiveState
 
     protected override ICardControllerState CardPreUpdate(ref bool cancel, Card card, int activeCardCount, int idx)
     {
+        RaycastHit hit;
+        if (Physics.Raycast(Controller.Camera.ScreenPointToRay(Input.mousePosition), out hit))
+        {
+            Controller.TileHightlight.transform.position = new Vector3(Mathf.Round(hit.point.x), 0, Mathf.Round(hit.point.z));
+            Controller.TileHightlight.SetActive(true);
+        } else
+            Controller.TileHightlight.SetActive(false);
+
         if (Input.GetMouseButtonDown(1))
+        {
+            Controller.TileHightlight.SetActive(false);
             return new IdleState(Controller);
+        }
 
         if (card != selected || !Input.GetKeyDown(KeyCode.K))
             return this;
 
         Controller.Cards.Remove(card);
-        UnityEngine.Object.Destroy(card.gameObject);
+        Object.Destroy(card.gameObject);
         return new IdleState(Controller);
     }
 
@@ -218,8 +232,7 @@ class CardSelectedState : PassiveState
         bool isSelected = card == selected;
         return isSelected
             ? CalculatePositionForSelectedCard()
-            : base.CalculatePositionForCard(index, total, card)
-                + (Vector2.down * Controller.Parameters.VerticalDownOffsetWhenSelected);
+            : base.CalculatePositionForCard(index, total, card);
     }
 
     protected override Quaternion CalculateRotationForCard(int index, int total, Card card)
@@ -236,8 +249,11 @@ public class CardsController : MonoBehaviour
 {
     public Canvas Canvas;
     public CardAnimationParameters Parameters;
-    public List<Card> Cards = new List<Card>();
+    public List<Card> Cards = new();
+    public GameObject TileHightlight;
+    public Camera Camera;
     public ICardControllerState State = null;
+
 
     void Update()
     {
