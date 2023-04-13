@@ -92,12 +92,12 @@ class PassiveState : ICardControllerState
     }
 
     protected virtual ICardControllerState CardPreUpdate(
-        ref bool cancel, Card card, int activeCardCount, int idx) => this;
+        Card card, int activeCardCount, int idx) => this;
 
     public ICardControllerState Update()
     {
         var parameters = Controller.Parameters;
-        int skippedUpdateCount = Controller.Cards.FindAll((card) => !card.gameObject.activeInHierarchy).Count;
+        int skippedUpdateCount = Controller.Cards.FindAll((card) => card != null && !card.gameObject.activeInHierarchy).Count;
         int updatesSkipped = 0;
         int activeCardCount = Controller.Cards.Count - 1 - skippedUpdateCount;
 
@@ -110,18 +110,12 @@ class PassiveState : ICardControllerState
                 updatesSkipped++;
                 continue;
             }
+
             int activeCardIdx = i - updatesSkipped;
 
-            bool interrupted = false;
-            var nextState = CardPreUpdate(ref interrupted, card, activeCardCount, activeCardIdx);
+            var nextState = CardPreUpdate(card, activeCardCount, activeCardIdx);
             if (nextState != this)
                 return nextState;
-
-            if (interrupted)
-            {
-                skippedUpdateCount++;
-                continue;
-            }
 
             var position = CalculatePositionForCard(activeCardIdx, activeCardCount, card);
             card.transform.position =
@@ -166,7 +160,7 @@ class IdleState : PassiveState
             : base.CalculateRotationForCard(index, total, card);
     }
 
-    protected override ICardControllerState CardPreUpdate(ref bool cancel, Card card, int activeCardCount, int idx)
+    protected override ICardControllerState CardPreUpdate(Card card, int activeCardCount, int idx)
     {
         if (Input.GetMouseButtonDown(0) && HoveredCard != null)
             return new CardSelectedState(Controller, HoveredCard);
@@ -192,6 +186,8 @@ class CardSelectedState : PassiveState
 {
     public Card selected;
 
+    ICardControllerState IdleState() => new IdleState(Controller);
+
     public CardSelectedState(CardsController controller, Card selected) : base(controller)
     {
         this.selected = selected;
@@ -206,7 +202,17 @@ class CardSelectedState : PassiveState
         return (Vector2)Input.mousePosition + offset;
     }
 
-    protected override ICardControllerState CardPreUpdate(ref bool cancel, Card card, int activeCardCount, int idx)
+    bool TryPlayCard(Card card, Tile tile) {
+        if(card.TryPlay(tile)) {
+            this.Controller.Cards.Remove(card);
+            card.gameObject.transform.SetParent(null);
+            Controller.TileHightlight.SetActive(false);
+            return true;
+        }
+        return false;
+    }
+
+    protected override ICardControllerState CardPreUpdate(Card card, int activeCardCount, int idx)
     {
         RaycastHit hit;
         if (Physics.Raycast(Controller.Camera.ScreenPointToRay(Input.mousePosition), out hit))
@@ -216,6 +222,12 @@ class CardSelectedState : PassiveState
             {
                 Controller.TileHightlight.transform.position = tile.GetWorldPivot();
                 Controller.TileHightlight.SetActive(true);
+
+                if (Input.GetMouseButtonDown(0)) {
+                    if(TryPlayCard(card, tile)) {
+                        return IdleState();
+                    }
+                }
             }
         }
         else
@@ -224,7 +236,7 @@ class CardSelectedState : PassiveState
         if (Input.GetMouseButtonDown(1))
         {
             Controller.TileHightlight.SetActive(false);
-            return new IdleState(Controller);
+            return IdleState();
         }
 
         if (card != selected || !Input.GetKeyDown(KeyCode.K))
@@ -232,7 +244,7 @@ class CardSelectedState : PassiveState
 
         Controller.Cards.Remove(card);
         Object.Destroy(card.gameObject);
-        return new IdleState(Controller);
+        return IdleState();
     }
 
     protected override Vector2 CalculatePositionForCard(int index, int total, Card card)
