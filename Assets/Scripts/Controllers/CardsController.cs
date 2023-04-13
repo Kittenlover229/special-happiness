@@ -45,6 +45,8 @@ public class CardAnimationParameters
 
 class PassiveState : ICardControllerState
 {
+    protected bool pullCardsUpOnHover = true;
+
     public PassiveState(CardsController controller)
     {
         this.Controller = controller;
@@ -68,7 +70,7 @@ class PassiveState : ICardControllerState
         float verticalArcNormalized = parameters.CardArcCurve.Evaluate(Mathf.Abs(1 - index / (float)(total != 0 ? total : 1) * 2));
         float verticalArc = verticalArcNormalized * parameters.CardArcLift;
         float vertialOffset = canvasRect.height / parameters.CardOffsetFractionOfTheScreen.y * parameters.CardOffsetFractionOfTheScreen.x;
-        float inactiveOffset = isInLowerThird ? 0 : parameters.VerticalDownOffsetWhenInactive;
+        float inactiveOffset = pullCardsUpOnHover && isInLowerThird ? 0 : parameters.VerticalDownOffsetWhenInactive;
 
         Vector3 newPosition = new Vector2(canvasRect.center.x, 0)
             + Vector2.up * vertialOffset
@@ -193,6 +195,7 @@ class CardSelectedState : PassiveState
     public CardSelectedState(CardsController controller, Card selected) : base(controller)
     {
         this.selected = selected;
+        this.pullCardsUpOnHover = false;
     }
 
     protected Vector2 CalculatePositionForSelectedCard()
@@ -208,9 +211,14 @@ class CardSelectedState : PassiveState
         RaycastHit hit;
         if (Physics.Raycast(Controller.Camera.ScreenPointToRay(Input.mousePosition), out hit))
         {
-            Controller.TileHightlight.transform.position = new Vector3(Mathf.Round(hit.point.x), 0, Mathf.Round(hit.point.z));
-            Controller.TileHightlight.SetActive(true);
-        } else
+            Tile tile = null;
+            if (hit.transform.TryGetComponent(out tile))
+            {
+                Controller.TileHightlight.transform.position = tile.GetWorldPivot();
+                Controller.TileHightlight.SetActive(true);
+            }
+        }
+        else
             Controller.TileHightlight.SetActive(false);
 
         if (Input.GetMouseButtonDown(1))
@@ -244,16 +252,24 @@ class CardSelectedState : PassiveState
     }
 }
 
-[ExecuteInEditMode]
 public class CardsController : MonoBehaviour
 {
     public Canvas Canvas;
     public CardAnimationParameters Parameters;
     public List<Card> Cards = new();
+    public GameObject CardPrefab;
     public GameObject TileHightlight;
     public Camera Camera;
     public ICardControllerState State = null;
 
+    public void AddCard(CardDescriptor desc) {
+        var newCard = Instantiate(CardPrefab, Vector3.zero, Quaternion.identity);
+        newCard.transform.SetParent(transform);
+        var card = newCard.GetComponent<Card>();
+        card.master = this;
+        card.EmplaceDescriptor(desc);
+        this.Cards.Add(card);
+    }
 
     void Update()
     {
